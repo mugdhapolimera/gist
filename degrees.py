@@ -17,6 +17,10 @@ import copy
 import pandas as pd
 from astropy.io import fits
 
+import multiprocessing as mp
+import matplotlib.pyplot as pyplot
+
+model = 'kurucz'
 def read_models(vazdekis, z):
 
 
@@ -139,16 +143,19 @@ def minimize_leg(galname, templates, galaxy, noise, velscale, start, goodPixels,
 
 
 
-df = pd.read_csv('../SDSS_spectra/RESOLVE_bpt1filter_new.csv')
+#df = pd.read_csv('../SDSS_spectra/RESOLVE_bpt1filter_new.csv')
+df = pd.read_csv('C:/Users/mugdhapolimera/github/SDSS_spectra/RESOLVE_filter_new.csv')
+
 df.index = df.name
 RunMC = True
 
 
 galname = 'rf0376'
-filename = '/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/inputData/binned3drf0376crop.fits'
+#filename = '/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/inputData/binned3drf0376crop.fits'
+filename = 'binned3drf0376crop.fits'
 
 h1 = fits.open(filename)[0].header
-summedspec=fits.read(filename)[0].data[2:-5]
+summedspec=fits.open(filename)[0].data[2:-5]
 
 #Program reads off the wavelength range for this spectrum
 wave_md = h1['CRVAL3']
