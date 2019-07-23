@@ -41,8 +41,10 @@ def findcenter(gal_lin):
     #print (m.params[1])
     return int(m.params[1])
 
-folder = '/srv/two/resolve/working/spec/EH_2014-09-20/'    
-filename = folder+'slincen_rf0376bspec.fits'
+#folder = '/srv/two/resolve/working/spec/EH_2014-09-20/'    
+folder = '/srv/two/resolve/working/spec/KE_2012-07-26/'
+#filename = folder+'slincen_rf0376bspec.fits'
+filename = folder+'slincen_rf0477bspec.fits'
 comp_file = folder+'cen_arc_broad.fits'
 galaxy = fits.open(filename)
 gal = galaxy[0].data
@@ -106,10 +108,10 @@ hdu['CDELT1'] = 1
 hdu['CD1_1'] = 1
 
 
-fits.writeto('/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/inputData/binned3drf0376crop.fits', binned_gal2, hdu)
+fits.writeto('/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/inputData/binned3drf0477crop.fits', binned_gal2, hdu)
 
 
-comp_file = folder+'lincen_rf0376bspec.fits'
+comp_file = folder+'lincen_rf0477bspec.fits'
 compfile = comp_file
 tmp1=comp_file.split('/')
 tmp2=tmp1[7].split('.')
