@@ -18,9 +18,41 @@ import pandas as pd
 from astropy.io import fits
 
 import multiprocessing as mp
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 
-model = 'kurucz'
+import glob
+
+from ppxf import ppxf
+from ppxf import ppxf_util as util
+from scipy import ndimage
+model = 'maraston'
+
+# =====================================================================================
+
+def DER_SNR(flux):
+   
+# =====================================================================================
+   from numpy import array, where, median, abs 
+
+   flux = array(flux)
+
+   # Values that are exactly zero (padded) are skipped
+   flux = array(flux[where(flux != 0.0)])
+   n    = len(flux)      
+
+   # For spectra shorter than this, no value can be returned
+   if (n>4):
+      signal = median(flux)
+
+      noise  = 0.6052697 * median(abs(2.0 * flux[2:n-2] - flux[0:n-4] - flux[4:n]))
+      return noise #float(signal / noise)  
+
+   else:
+
+      return 0.0
+
+# end DER_SNR -------------------------------------------------------------------------
+
 def read_models(vazdekis, z):
 
 
@@ -37,6 +69,7 @@ def read_models(vazdekis, z):
         hdu = fits.open(vazdekis[j])
         ssp = hdu[0].data
         h2 = hdu[0].header
+        print (h2)
         if model != 'kurucz':
             lamRange2 = h2['CRVAL1'] + np.array([0.,h2['CDELT1']*(h2['NAXIS1']-1)])
         else:
@@ -141,59 +174,63 @@ def minimize_leg(galname, templates, galaxy, noise, velscale, start, goodPixels,
 
 
 
+iterations = 30
+models = ['maraston', 'vazdeki', 'miles', 'elodie', 'kurucz']
 
+model = 'maraston' #ask_user_options('Which models should we use?', models)
+if model == 'maraston':
+        #SSPs made based on Prof. Maraston's work by Mark Norris
+    vazdekis=glob.glob('/afs/cas.unc.edu/users/m/a/manorris/public/kroupa/templates/*.fits')
+    #vazdekis=glob.glob('/srv/two/sheila/natetc/ppxfblue/marastontest/*.fits')
+    FWHM_tem = 0.55
+elif model == 'vazdeki':
+        #Stock vazdeki stellar library provided with ppxf
+    vazdekis = glob.glob(ppxf_dir + '/miles_models/Mun1.30Z*.fits')
+    FWHM_tem = 2.51
+elif model == 'elodie':
+        #Elodie stellar library
+    vazdekis = glob.glob('/afs/cas.unc.edu/users/n/a/natetc/public/elodie/H/*.fits')
+    FWHM_tem = 0.5
+elif model == 'miles':
+        #Miles stellar library
+    vazdekis = glob.glob('/afs/cas.unc.edu/users/n/a/natetc/public/miles/*.fits')
+    FWHM_tem = 2.51
+elif model == 'kurucz':
+        #Model stellar spectra produced by Kurucz; basically a very small stellar library
+    vazdekis = glob.glob('/srv/two/sheila/natetc/ppxfblue/kurucz*.fits')
+    FWHM_tem = []
+    for vazdeki in vazdekis:
+        vaz = fits.open(vazdeki)
+        FWHM_tem.append(vaz[0].header['FWHM'])
 
-#df = pd.read_csv('../SDSS_spectra/RESOLVE_bpt1filter_new.csv')
-df = pd.read_csv('C:/Users/mugdhapolimera/github/SDSS_spectra/RESOLVE_filter_new.csv')
+df = pd.read_csv('../SDSS_spectra/RESOLVE_bpt1filter_new.csv')
+#df = pd.read_csv('C:/Users/mugdhapolimera/github/SDSS_spectra/RESOLVE_filter_new.csv')
 
 df.index = df.name
 RunMC = True
 
 
-galname = 'rf0376'
-#filename = '/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/inputData/binned3drf0376crop.fits'
-filename = 'binned3drf0376crop.fits'
+galname = 'rs0010'
+filename = '/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/inputData/binned3drs0010crop.fits'
+#filename = 'binned3drf0376crop.fits'
 
 h1 = fits.open(filename)[0].header
-summedspec=fits.open(filename)[0].data[2:-5]
+spec=fits.open(filename)[0].data
+summedspec = np.sum(spec, axis = 2)[:,0]
 
 #Program reads off the wavelength range for this spectrum
-wave_md = h1['CRVAL3']
-wave_pix = h1['CRPIX3']
-wave_del = h1['CD3_3']
-wave_st = wave_md - wave_del*wave_pix + 2*wave_del
-wave_ed = wave_md + wave_del*wave_pix - 5*wave_del
-waves = [wave_st, wave_ed]
+
+lam = (np.arange(h1['NAXIS3']) + h1['CRPIX3']-1) * h1['CD3_3'] + h1['CRVAL3']
+lamRange1=np.array([lam[0], lam[-1]])	#start wavelength, end wavelength
 
 print('')
-print('Starting Wavelength is ' + str(wave_st) + ' Angsroms')
-print('Ending Wavelength is ' + str(wave_ed) + ' Angsroms')
+print('Starting Wavelength is ' + str(lam[0]) + ' Angstroms')
+print('Ending Wavelength is ' + str(lam[-1]) + ' Angstroms')
 print('')
 
-lam = np.linspace(waves[0], waves[1], num=len(summedspec))
-lamRange1=np.array([waves[0], waves[1]])	#start wavelength, end wavelength
-
-## Truncate off low resolution part of our data
-## Blue region to the left of the 1st chip gap FWHM = 1.2
-## Rest of the image further to the red FWHM = 1.0
-if wave_st < 4070:
-    gap = 4540 #chipgap blue
-else:
-    gap = 4580 #chipgap red
-sel = np.where(lam > gap)
-summedspec = summedspec[sel]
-lam = lam[sel]
-waves[0] = np.min(lam)
-lamRange1[0] = np.min(lam)
 
 
 
-lamRange1, lam, = read_gemini(specfile)
-
-galaxy, logLam1, velscale = util.log_rebin(lamRange1, summedspec)
-median = np.nanmedian(galaxy)
-galaxy = galaxy / median
-noise = np.ones_like(galaxy) * h1['NOISE'] / median #constant noise based on 
 #error calculated around continuum by binning program
 FWHM_gal = 6.5 #from sky line fitting
 c = 299792.458
@@ -207,9 +244,32 @@ h2, lamRange2, templates = read_models(vazdekis, z)
 ### Cosmological Redshift Correction ###    
 lamRange1 = lamRange1 / (1+z)
 FWHM_gal = FWHM_gal / (1+z)
+
+goodlam = (lam/(1+z) > 3900) & (lam/(1+z) < 6797)
+lam = lam[goodlam]
+lamRange1 = np.array([lam[0], lam[-1]]) / (1+z)
+summedspec = summedspec[goodlam]
+
+gal, logLam1, velscale = util.log_rebin(lamRange1, summedspec)
+median = np.nanmedian(gal)
+#galaxy = galaxy / median
+noise = np.zeros(spec.shape[0])
+for i in range(spec.shape[0]):
+    noise[i] = DER_SNR(spec[i,:,:])
+noise = noise[goodlam]/median
+
 z2 = copy.copy(z)
 z=0  #Bring Galaxy to Rest Frame
+gal = gal/median
+#galaxy = galaxy[overlaplam]
+#noise = noise[overlaplam]
+lam_temp = h2['CRVAL1'] + h2['CDELT1']*np.arange(h2['NAXIS1'])
+    
 
+FWHM_dif = np.sqrt(FWHM_gal**2 - FWHM_tem**2)
+sigma = FWHM_dif/2.355/h2['CDELT1'] #dl/pix
+#print(sigma)
+blur_temp = True
 
 sspNew, logLam2, velscale_temp = util.log_rebin(lamRange2, templates[:,0],
                                         velscale=velscale/velscale_ratio)
@@ -217,6 +277,8 @@ templatesNew = np.zeros((sspNew.shape[0], templates.shape[1]))
 
 for s in range(templates.shape[1]):
         ssp = templates[:,s]
+        if blur_temp:
+            ssp = ndimage.gaussian_filter1d(ssp,sigma)
         sspNew, logLam2, velscale_temp = util.log_rebin(lamRange2, ssp,velscale=velscale/velscale_ratio)
         templatesNew[:,s] = sspNew/np.median(sspNew)
 
@@ -240,13 +302,18 @@ if RunMC:
     #This seed depends on exact system time
     np.random.seed(seed=microsecond) 
     normal = np.random.normal(size=noise.shape) * noise
-    galaxy = galaxy + normal
+    galaxy = gal + normal
 
+goodPixels = np.arange(len(galaxy))
 
+em_lam = np.array([4363, 5007, 4861, 6548, 6562, 6584, 6717, 6731])
+
+goodPixels = [x for x in range(len(lam)) if ~((lam[x] < (em_lam + 10)) & (lam[x] > (em_lam - 10))).all()]
+goodPixels = np.array(goodPixels)
 degrees = [10,10]
 degrees = minimize_leg(galname, templates, galaxy, noise, velscale, start, 
                       goodPixels, dv, velscale_ratio, iterations, RunMC, 
-                      find_min = True)
+                     find_min = True)
 
 ppxf_obj = ppxf.ppxf(templates, galaxy, noise, velscale, start, 
                      goodpixels=goodPixels, plot=False, moments=4,
@@ -260,3 +327,5 @@ vel_disp_err = ppxf_obj.error[1]*np.sqrt(ppxf_obj.chi2)
 
 print("Minimization took %s minutes to complete"
       %int(round((time.time() - stime) / 60.)))
+
+ppxf_obj.plot()
