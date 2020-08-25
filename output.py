@@ -36,8 +36,8 @@ def ratioerror(num,num_err,den, den_err):
 
 root = '/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/results/'
 #galname = 'rf0376'
-galname = 'rs0010' #strong OI
-#galname = 'rf0503' #strong OI - very compact; only bins 0 and 2 have good SNR
+#galname = 'rs0010' #strong OI
+galname = 'rf0503' #strong OI - very compact; only bins 0 and 2 have good SNR
 
 #galname = 'rf0477' #- strong OI; good SNR ~ 7
 #galname = 'rs0105' - strong OI but weak SNR for spectrum
@@ -47,7 +47,7 @@ inputname = 'binned3d'+galname+'crop'
 #inputname = 'binned3arcsdssrs0010'
 #inputname = 'sami2sdssrs0010blue' #'sdss3arcrs0010'
 #folder = root+inputname+'_1/'
-folder = root+inputname+'_snr5/'
+folder = root+inputname+'_snr5skymask/'
 os.chdir(folder)
 
 cfit = Table.read(inputname+'_ppxf-bestfit.fits')
@@ -125,7 +125,7 @@ em_name = Table.read(inputname+'_gandalf_BIN.fits', hdu = 1)['name']
 #halpha = em[:,em_name == 'Ha'][[0,2]]
 #hbeta = em[:,em_name == 'Hb'][[0,2]]
 nii = em[:,em_name == '[NII]']
-#sii = em[:,em_lam == 6716.31]+ em[:,em_lam == 6730.68]#em[:,em_name == '[SII]']
+sii = em[:,em_lam == 6716.31]+ em[:,em_lam == 6730.68]#em[:,em_name == '[SII]']
 oi = em[:,em_name == '[OI]']
 oiii = em[:,em_lam == 5006.77]#[:,em_name == '[OIII]']
 halpha = em[:,em_name == 'Ha']
@@ -136,9 +136,10 @@ cmap = plt.get_cmap('rainbow', len(nii)*2)
 #tag = np.arange(len(nii))
 tag = np.array([0,1,1,3.4,8,3,7])*pixelscale #only for rs0010
 n2ha = np.log10(nii/halpha)
-#s2ha = np.log10(sii/halpha)
+s2ha = np.log10(sii/halpha)
 o1ha= np.log10(oi/halpha)
 o3hb = np.log10(oiii/hbeta)
+tag = np.arange(len(n2ha))
 if error: 
     n2ha_err = ratioerror(nii, nii_err, halpha, halpha_err)
 #    s2ha_err = ratioerror(sii, sii_err, halpha, halpha_err)
