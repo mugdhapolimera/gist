@@ -1,0 +1,150 @@
+08/27/20 19:52:18 - INFO     - _initialise: 
+
+# ============================================== #
+#               THE GIST PIPELINE                #
+#                 Version 3.0.0                  #
+# ============================================== #
+
+08/27/20 19:52:18 - INFO     - _readData: Using the read-in routine for SOAR
+08/27/20 19:52:18 - INFO     - SOAR: Reading the SOAR long-slit spectrum: ./inputData/binned3drs0010crop.fits
+08/27/20 19:52:18 - INFO     - SOAR: No error extension found. Estimating the error spectra with the der_snr algorithm
+08/27/20 19:52:18 - INFO     - SOAR: Extracting spatial information:
+                                     * Spatial coordinates are centred to [0.0, 58.0]
+                                     * Spatial pixelsize is 0.8699999999999999
+08/27/20 19:52:18 - INFO     - SOAR: Extracting spectral information:
+                                     * Shortened spectra to wavelength range from 4400 to 6900 Angst.
+                                     * Spectral pixelsize in velocity space is 103.14164807117601 km/s
+08/27/20 19:52:18 - INFO     - SOAR: Removing all spaxels containing nan or having a negative median flux:
+                                     * Of 46 in the cube, 42 are accepted and 4 removed
+08/27/20 19:52:18 - INFO     - SOAR: Computing the signal-to-noise ratio in the wavelength range from 6900A to 6900A.
+08/27/20 19:52:18 - INFO     - SOAR: Finished reading the SOAR long-slit spectrum!
+08/27/20 19:52:18 - INFO     - _spatialMasking: Using the spatial masking routine for default
+08/27/20 19:52:18 - INFO     - default: Masking defunct spaxels: 0 spaxels are rejected.
+08/27/20 19:52:18 - INFO     - default: Masking low signal-to-noise spaxels: 21 spaxels are rejected.
+08/27/20 19:52:18 - INFO     - default: No maskfile specified.
+08/27/20 19:52:18 - INFO     - default: Combined mask: 21 spaxels are rejected.
+08/27/20 19:52:18 - INFO     - default: Wrote mask file: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_mask.fits
+08/27/20 19:52:18 - INFO     - _spatialBinning: Using the spatial binning routine for voronoi
+08/27/20 19:52:18 - INFO     - voronoi: Defining the Voronoi bins
+08/27/20 19:52:18 - INFO     - voronoi: 3 Voronoi bins generated!
+08/27/20 19:52:18 - INFO     - voronoi: Wrote Voronoi table: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_table.fits
+08/27/20 19:52:18 - INFO     - _prepareSpectra: Using the routine for default
+08/27/20 19:52:18 - INFO     - default: Applied spatial bins to lin-data
+08/27/20 19:52:18 - INFO     - default: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_BinSpectra_linear.fits
+08/27/20 19:52:18 - INFO     - default: Log-rebinned the spectra
+08/27/20 19:52:18 - INFO     - default: Log-rebinned the error spectra
+08/27/20 19:52:18 - INFO     - default: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_AllSpectra.fits
+08/27/20 19:52:18 - INFO     - default: Applied spatial bins to log-data
+08/27/20 19:52:18 - INFO     - default: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_BinSpectra.fits
+08/27/20 19:52:18 - INFO     - _stellarKinematics: Using the stellarKinematics routine 'ppxf.py'
+08/27/20 19:52:18 - INFO     - ppxf: Using full spectral library for PPXF
+08/27/20 19:52:18 - INFO     - _prepareTemplates: Using the routine for 'miles.py'
+08/27/20 19:52:20 - INFO     - miles: Prepared the stellar population templates
+08/27/20 19:52:20 - INFO     - ppxf: Using V and SIGMA from the MasterConfig file as initial guesses
+08/27/20 19:52:20 - INFO     - ppxf: Running PPXF in parallel mode
+08/27/20 19:52:25 - INFO     - ppxf: Running PPXF on 3 spectra took 4.38s using 16 cores
+08/27/20 19:52:25 - INFO     - ppxf: There were no problems in the analysis.
+08/27/20 19:52:25 - INFO     - ppxf: Calculating Lambda_R
+08/27/20 19:52:25 - INFO     - ppxf: To obtain correct lambda_R measurements, the coordinate system must be centred on the centre of the galaxy. Use the 'READ_DATA|ORIGIN' parameter to do so.
+08/27/20 19:52:25 - INFO     - ppxf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_kin.fits
+08/27/20 19:52:25 - INFO     - ppxf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_kin-bestfit.fits
+08/27/20 19:52:25 - INFO     - ppxf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_kin-optimalTemplates.fits
+08/27/20 19:52:25 - ERROR    - _plotting: Error in qhull Delaunay triangulation calculation: input inconsistency (exitcode=1); use python verbose option (-v) to see original qhull error.
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/_plotting.py", line 18, in generatePlots
+    gistPlot_kin.plotMaps('KIN', config['GENERAL']['OUTPUT'])
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/gistPlot_kin.py", line 163, in plotMaps
+    XY_Triangulation = Triangulation(X-pixelsize/2, Y-pixelsize/2)                      # Create a mesh from a Delaunay triangulation
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/matplotlib/tri/triangulation.py", line 54, in __init__
+    self.triangles, self._neighbors = _qhull.delaunay(x, y)
+RuntimeError: Error in qhull Delaunay triangulation calculation: input inconsistency (exitcode=1); use python verbose option (-v) to see original qhull error.
+08/27/20 19:52:25 - ERROR    - _plotting: Failed to produce stellar kinematics maps.
+08/27/20 19:52:25 - INFO     - _emissionLines: Using the emissionLines routine 'gandalf.py'
+08/27/20 19:52:25 - INFO     - gandalf: Using full spectral library for GANDALF on BIN level
+08/27/20 19:52:25 - INFO     - _prepareTemplates: Using the routine for 'miles.py'
+08/27/20 19:52:27 - INFO     - miles: Prepared the stellar population templates
+08/27/20 19:52:28 - INFO     - gandalf: Running GANDALF in parallel mode
+08/27/20 19:52:52 - INFO     - gandalf: Running GANDALF on 3 spectra took 24.57s using 16 cores
+08/27/20 19:52:52 - INFO     - gandalf: There were no problems in the analysis.
+08/27/20 19:52:52 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas_BIN.fits
+08/27/20 19:52:52 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-bestfit_BIN.fits
+08/27/20 19:52:52 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-emission_BIN.fits
+08/27/20 19:52:52 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-cleaned_BIN.fits
+08/27/20 19:52:52 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-weights_BIN.fits
+08/27/20 19:52:52 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-optimalTemplate_BIN.fits
+08/27/20 19:52:52 - INFO     - gandalf: Using previously extracted optimal templates from the GANDALF BIN level on SPAXEL level
+08/27/20 19:52:52 - INFO     - gandalf: Running GANDALF in parallel mode
+08/27/20 19:52:57 - INFO     - gandalf: Running GANDALF on 42 spectra took 4.96s using 16 cores
+08/27/20 19:52:57 - INFO     - gandalf: There were no problems in the analysis.
+08/27/20 19:52:57 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas_SPAXEL.fits
+08/27/20 19:52:57 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-bestfit_SPAXEL.fits
+08/27/20 19:52:57 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-emission_SPAXEL.fits
+08/27/20 19:52:57 - INFO     - gandalf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-cleaned_SPAXEL.fits
+08/27/20 19:52:58 - ERROR    - _plotting: Error in qhull Delaunay triangulation calculation: input inconsistency (exitcode=1); use python verbose option (-v) to see original qhull error.
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/_plotting.py", line 33, in generatePlots
+    gistPlot_gas.plotMaps(config['GENERAL']['OUTPUT'], 'BIN', True)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/gistPlot_gas.py", line 270, in plotMaps
+    plot_line(data, LEVEL, FROM_PIPELINE, INTERACTIVE, SAVE_AFTER_INTERACTIVE, line, vminmax, 0.20, X, Y, FLUX, pixelsize, outdir, rootname)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/gistPlot_gas.py", line 124, in plot_line
+    XY_Triangulation = Triangulation(X-pixelsize/2, Y-pixelsize/2)                      # Create a mesh from a Delaunay triangulation
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/matplotlib/tri/triangulation.py", line 54, in __init__
+    self.triangles, self._neighbors = _qhull.delaunay(x, y)
+RuntimeError: Error in qhull Delaunay triangulation calculation: input inconsistency (exitcode=1); use python verbose option (-v) to see original qhull error.
+08/27/20 19:52:58 - ERROR    - _plotting: Failed to produce maps from the emission-line analysis.
+08/27/20 19:52:58 - INFO     - _starFormationHistories: Using the starFormationHistories routine 'ppxf.py'
+08/27/20 19:52:58 - INFO     - _prepareTemplates: Using the routine for 'miles.py'
+08/27/20 19:53:00 - INFO     - miles: Prepared the stellar population templates
+08/27/20 19:53:00 - INFO     - ppxf: Using emission-subtracted spectra at ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-cleaned_BIN.fits
+08/27/20 19:53:00 - INFO     - ppxf: Stellar kinematics are FIXED to the results obtained before.
+08/27/20 19:53:00 - INFO     - ppxf: Running PPXF in parallel mode
+08/27/20 19:53:12 - INFO     - ppxf: Running PPXF on 3 spectra took 12.63s using 16 cores
+08/27/20 19:53:12 - INFO     - ppxf: There were no problems in the analysis.
+08/27/20 19:53:12 - INFO     - ppxf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_sfh.fits
+08/27/20 19:53:13 - INFO     - ppxf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_sfh-weights.fits
+08/27/20 19:53:13 - INFO     - ppxf: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_sfh-bestfit.fits
+08/27/20 19:53:13 - ERROR    - _plotting: Error in qhull Delaunay triangulation calculation: input inconsistency (exitcode=1); use python verbose option (-v) to see original qhull error.
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/_plotting.py", line 48, in generatePlots
+    gistPlot_sfh.plotMaps('SFH', config['GENERAL']['OUTPUT'])
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/gistPlot_sfh.py", line 176, in plotMaps
+    XY_Triangulation = Triangulation(X-pixelsize/2, Y-pixelsize/2)                      # Create a mesh from a Delaunay triangulation
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/matplotlib/tri/triangulation.py", line 54, in __init__
+    self.triangles, self._neighbors = _qhull.delaunay(x, y)
+RuntimeError: Error in qhull Delaunay triangulation calculation: input inconsistency (exitcode=1); use python verbose option (-v) to see original qhull error.
+08/27/20 19:53:13 - ERROR    - _plotting: Failed to produce SFH maps.
+08/27/20 19:53:13 - INFO     - _lineStrengths: Using the lineStrengths routine 'default.py'
+08/27/20 19:53:13 - INFO     - default: Using emission-subtracted spectra at ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_gas-cleaned_BIN.fits
+08/27/20 19:53:13 - INFO     - default: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_ls-cleaned_linear.fits
+08/27/20 19:53:13 - INFO     - default: Running lineStrengths in parallel mode
+08/27/20 19:53:13 - INFO     - default: Running lineStrengths on 3 spectra took 0.45s using 16 cores
+08/27/20 19:53:13 - INFO     - default: There were no problems in the analysis.
+08/27/20 19:53:13 - INFO     - default: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_ls_OrigRes.fits
+08/27/20 19:53:13 - INFO     - default: Reading ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_ls-cleaned_linear.fits
+08/27/20 19:53:14 - INFO     - default: Loading LS model file at ./spectralTemplates/MILES_KB_LIS8.4.fits
+08/27/20 19:53:14 - INFO     - default: Running lineStrengths in parallel mode
+08/27/20 19:53:14 - INFO     - default: Running lineStrengths on 3 spectra took 0.85s using 16 cores
+08/27/20 19:53:14 - INFO     - default: There were no problems in the analysis.
+08/27/20 19:53:15 - INFO     - default: Wrote: ./results/./rs0010_lsf6_sr8/rs0010_lsf6_sr8_ls_AdapRes.fits
+08/27/20 19:53:15 - ERROR    - _plotting: Error in qhull Delaunay triangulation calculation: input inconsistency (exitcode=1); use python verbose option (-v) to see original qhull error.
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/_plotting.py", line 61, in generatePlots
+    gistPlot_ls.plotMaps(config['GENERAL']['OUTPUT'], 'ORIGINAL')
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/gistPlot_ls.py", line 166, in plotMaps
+    XY_Triangulation = Triangulation(X-pixelsize/2, Y-pixelsize/2)                      # Create a mesh from a Delaunay triangulation
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/matplotlib/tri/triangulation.py", line 54, in __init__
+    self.triangles, self._neighbors = _qhull.delaunay(x, y)
+RuntimeError: Error in qhull Delaunay triangulation calculation: input inconsistency (exitcode=1); use python verbose option (-v) to see original qhull error.
+08/27/20 19:53:15 - ERROR    - _plotting: Failed to produce line strength maps.
+08/27/20 19:53:22 - INFO     - MainPipeline: The GIST completed successfully.
+08/27/20 19:53:22 - ERROR    - _initialise: Uncaught Exception
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/bin/gistPipeline", line 11, in <module>
+    load_entry_point('gistPipeline==3.0.0', 'console_scripts', 'gistPipeline')()
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/MainPipeline.py", line 206, in main
+    runGIST(dirPath, galindex)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/MainPipeline.py", line 76, in runGIST
+    config = _initialise.addPathsToConfig(config, dirPath)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/initialise/_initialise.py", line 130, in addPathsToConfig
+    config['GENERAL']['INPUT'] = os.path.join(line[1], config['GENERAL']['INPUT'])
+TypeError: 'NoneType' object is not subscriptable
