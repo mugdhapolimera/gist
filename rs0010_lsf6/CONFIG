@@ -1,0 +1,76 @@
+GENERAL:
+  RUN_ID: rs0010_lsf6
+  INPUT: ./inputData/binned3drs0010crop.fits
+  OUTPUT: ./results/./rs0010_lsf6
+  REDSHIFT: 0.01942677
+  PARALLEL: true
+  NCPU: 16
+  LSF_DATA: lsf_SOAR
+  LSF_TEMP: lsf_MILES
+  OW_CONFIG: false
+  OW_OUTPUT: false
+  CONFIG_DIR: ./configFiles
+  TEMPLATE_DIR: ./spectralTemplates
+READ_DATA:
+  METHOD: SOAR
+  DEBUG: false
+  ORIGIN: 0.,58.
+  LMIN_TOT: 4400
+  LMAX_TOT: 6900
+  LMIN_SNR: 4400
+  LMAX_SNR: 6900
+SPATIAL_MASKING:
+  METHOD: default
+  MIN_SNR: 1.0
+  MASK: false
+SPATIAL_BINNING:
+  METHOD: voronoi
+  TARGET_SNR: 10.0
+  COVARIANCE: 0.0
+PREPARE_SPECTRA:
+  METHOD: default
+  VELSCALE: 113.72
+PREPARE_TEMPLATES:
+  METHOD: miles
+  LIBRARY: MILES/
+  NORM_TEMP: LIGHT
+KIN:
+  METHOD: ppxf
+  SPEC_MASK: spectralMasking_PPXF
+  LMIN: 4400
+  LMAX: 6900
+  SIGMA: 100
+  MOM: 4
+  ADEG: 8
+  MDEG: 0
+  REDDENING: null
+  MC_PPXF: 0
+GAS:
+  METHOD: gandalf
+  LEVEL: BOTH
+  LMIN: 4400
+  LMAX: 6900
+  ERRORS: 0
+  REDDENING: false
+  MDEG: 10
+  EBmV: null
+  EMI_FILE: emissionLines.config
+SFH:
+  METHOD: ppxf
+  LMIN: 4400
+  LMAX: 6900
+  SPEC_MASK: specMask_SFH
+  MOM: 4
+  MDEG: 4
+  REGUL_ERR: 1.0
+  NOISE: 1.0
+  FIXED: true
+LS:
+  METHOD: default
+  TYPE: SPP
+  LS_FILE: lsBands.config
+  CONV_COR: 8.4
+  SPP_FILE: MILES_KB_LIS8.4.fits
+  MC_LS: 30
+  NWALKER: 10
+  NCHAIN: 100
