@@ -46,7 +46,7 @@ def extract_spectra_parameters(skyfiles,arcfiles,setup):
         hdu = fitsfile[0].header
         arcspec = fitsfile[2].data[0] # this should be the spectra of one random fiber
         archdr = fitsfile[2].header
-        pdb.set_trace()
+        #pdb.set_trace()
         len_of_wavelength_axis = len(arcspec)
         delta_lamb = archdr['CDELT1']
         starting_lam = archdr['CRVAL1']
@@ -65,7 +65,7 @@ def extract_spectra_parameters(skyfiles,arcfiles,setup):
         return lam, arcspec, conv, pix_to_fit
 
 #be sure to change name at the top
-lam, skyspec, conv, pix_to_fit = extract_spectra_parameters(skyfiles,arcfiles,'red')
+lam, skyspec, conv, pix_to_fit = extract_spectra_parameters(skyfiles,arcfiles,'blue')
 
 #plt.plot(lam,skyspec)
 #plt.show()

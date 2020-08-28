@@ -67,9 +67,9 @@ nbins = np.unique(np.abs(table.BIN_ID))
 df= pd.read_csv('~/github/SDSS_spectra/RESOLVE_filter_new.csv')
 df.index = df.name    
 
-#db = readsav('/srv/one/resolve/database_internal/merged_idl_catalog/stable/resolvecatalog.dat')
+db = readsav('/srv/one/resolve/database_internal/merged_idl_catalog/stable/resolvecatalog.dat')
  
-db = readsav('C:/users/mugdhapolimera/github/SDSS_spectra/resolvecatalog.dat')
+#db = readsav('C:/users/mugdhapolimera/github/SDSS_spectra/resolvecatalog.dat')
 name = [x.decode('utf-8') for x in db['name']]
 vhel = dict(zip(name,db['vhel'])) #km/s
 v = vhel[galname]
@@ -85,10 +85,13 @@ mask = np.genfromtxt('../spectralMasking_PPXF', dtype = None,
                     skip_header = 3, names = ['lam','width','line'])
 em_ndx = (mask['line'] != b'sky')
 
-fig, axes = plt.subplots(3,1)
+fig, axes = plt.subplots(len(nbins),1)
 fig.suptitle(folder)
 for nbin in nbins:
-    ax = axes.ravel()[nbin]
+    if len(nbins) > 1: 
+        ax = axes.ravel()[nbin]
+    else:
+        ax = axes
 #    plt.plot(np.exp(lam), spec[nbin]+(nbin*2*np.max(spec[nbin-1])), 'k')
 #    plt.plot( np.exp(lam), fit['BESTFIT'][nbin]+(nbin*2*np.max(spec[nbin-1])), 'r', lw = 3)
 #    plt.plot( np.exp(lam), cfit['BESTFIT'][nbin]+(nbin*2*np.max(spec[nbin-1])), 'orange', lw = 2)

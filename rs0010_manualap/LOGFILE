@@ -1,0 +1,222 @@
+08/28/20 19:16:57 - INFO     - _initialise: 
+
+# ============================================== #
+#               THE GIST PIPELINE                #
+#                 Version 3.0.0                  #
+# ============================================== #
+
+08/28/20 19:16:57 - INFO     - _readData: Using the read-in routine for SOAR
+08/28/20 19:16:57 - INFO     - SOAR: Reading the SOAR long-slit spectrum: ./inputData/binned3drs0010crop.fits
+08/28/20 19:16:57 - INFO     - SOAR: No error extension found. Estimating the error spectra with the der_snr algorithm
+08/28/20 19:16:57 - INFO     - SOAR: Extracting spatial information:
+                                     * Spatial coordinates are centred to [0.0, 58.0]
+                                     * Spatial pixelsize is 0.8699999999999999
+08/28/20 19:16:57 - INFO     - SOAR: Extracting spectral information:
+                                     * Shortened spectra to wavelength range from 4400 to 6900 Angst.
+                                     * Spectral pixelsize in velocity space is 103.14164807117601 km/s
+08/28/20 19:16:57 - INFO     - SOAR: Removing all spaxels containing nan or having a negative median flux:
+                                     * Of 46 in the cube, 42 are accepted and 4 removed
+08/28/20 19:16:57 - INFO     - SOAR: Computing the signal-to-noise ratio in the wavelength range from 6900A to 6900A.
+08/28/20 19:16:57 - INFO     - SOAR: Finished reading the SOAR long-slit spectrum!
+08/28/20 19:16:57 - INFO     - _spatialMasking: Using the spatial masking routine for default
+08/28/20 19:16:57 - INFO     - default: Masking defunct spaxels: 0 spaxels are rejected.
+08/28/20 19:16:57 - INFO     - default: Masking low signal-to-noise spaxels: 14 spaxels are rejected.
+08/28/20 19:16:57 - INFO     - default: No maskfile specified.
+08/28/20 19:16:57 - INFO     - default: Combined mask: 14 spaxels are rejected.
+08/28/20 19:16:57 - INFO     - default: Wrote mask file: ./results/./rs0010_manualap/rs0010_manualap_mask.fits
+08/28/20 19:16:57 - INFO     - _spatialBinning: Using the spatial binning routine for voronoi
+08/28/20 19:16:57 - INFO     - voronoi: Defining the Voronoi bins
+08/28/20 19:16:57 - INFO     - voronoi: 2 Voronoi bins generated!
+08/28/20 19:16:57 - INFO     - voronoi: Wrote Voronoi table: ./results/./rs0010_manualap/rs0010_manualap_table.fits
+08/28/20 19:16:57 - INFO     - _prepareSpectra: Using the routine for default
+08/28/20 19:16:57 - INFO     - default: Applied spatial bins to lin-data
+08/28/20 19:16:57 - INFO     - default: Wrote: ./results/./rs0010_manualap/rs0010_manualap_BinSpectra_linear.fits
+08/28/20 19:16:57 - INFO     - default: Log-rebinned the spectra
+08/28/20 19:16:57 - INFO     - default: Log-rebinned the error spectra
+08/28/20 19:16:57 - INFO     - default: Wrote: ./results/./rs0010_manualap/rs0010_manualap_AllSpectra.fits
+08/28/20 19:16:57 - INFO     - default: Applied spatial bins to log-data
+08/28/20 19:16:57 - INFO     - default: Wrote: ./results/./rs0010_manualap/rs0010_manualap_BinSpectra.fits
+08/28/20 19:16:57 - INFO     - _stellarKinematics: Using the stellarKinematics routine 'ppxf.py'
+08/28/20 19:16:57 - INFO     - ppxf: Using full spectral library for PPXF
+08/28/20 19:16:57 - INFO     - _prepareTemplates: Using the routine for 'miles.py'
+08/28/20 19:17:00 - INFO     - miles: Prepared the stellar population templates
+08/28/20 19:17:00 - INFO     - ppxf: Using V and SIGMA from the MasterConfig file as initial guesses
+08/28/20 19:17:00 - INFO     - ppxf: Running PPXF in parallel mode
+08/28/20 19:17:01 - ERROR    - _initialise: Uncaught Exception
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/bin/gistPipeline", line 11, in <module>
+    load_entry_point('gistPipeline==3.0.0', 'console_scripts', 'gistPipeline')()
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/MainPipeline.py", line 206, in main
+    runGIST(dirPath, galindex)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/MainPipeline.py", line 132, in runGIST
+    _ = _stellarKinematics.stellarKinematics_Module(config)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/stellarKinematics/_stellarKinematics.py", line 49, in stellarKinematics_Module
+    module.extractStellarKinematics(config)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/stellarKinematics/ppxf.py", line 329, in extractStellarKinematics
+    ppxf_tmp = [outQueue.get() for _ in range(nbins)]
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/stellarKinematics/ppxf.py", line 329, in <listcomp>
+    ppxf_tmp = [outQueue.get() for _ in range(nbins)]
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/multiprocessing/queues.py", line 94, in get
+    res = self._recv_bytes()
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/multiprocessing/connection.py", line 216, in recv_bytes
+    buf = self._recv_bytes(maxlength)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/multiprocessing/connection.py", line 407, in _recv_bytes
+    buf = self._recv(4)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/multiprocessing/connection.py", line 379, in _recv
+    chunk = read(handle, remaining)
+KeyboardInterrupt
+08/28/20 19:25:14 - INFO     - _initialise: 
+
+# ============================================== #
+#               THE GIST PIPELINE                #
+#                 Version 3.0.0                  #
+# ============================================== #
+
+08/28/20 19:25:14 - INFO     - _readData: Using the read-in routine for SOAR
+08/28/20 19:25:14 - INFO     - SOAR: Reading the SOAR long-slit spectrum: ./inputData/binned3drs0010crop.fits
+08/28/20 19:25:14 - INFO     - SOAR: No error extension found. Estimating the error spectra with the der_snr algorithm
+08/28/20 19:25:14 - INFO     - SOAR: Extracting spatial information:
+                                     * Spatial coordinates are centred to [0.0, 58.0]
+                                     * Spatial pixelsize is 0.8699999999999999
+08/28/20 19:25:14 - INFO     - SOAR: Extracting spectral information:
+                                     * Shortened spectra to wavelength range from 4400 to 6900 Angst.
+                                     * Spectral pixelsize in velocity space is 103.14164807117601 km/s
+08/28/20 19:25:14 - INFO     - SOAR: Removing all spaxels containing nan or having a negative median flux:
+                                     * Of 46 in the cube, 42 are accepted and 4 removed
+08/28/20 19:25:14 - INFO     - SOAR: Computing the signal-to-noise ratio in the wavelength range from 6900A to 6900A.
+08/28/20 19:25:14 - INFO     - SOAR: Finished reading the SOAR long-slit spectrum!
+08/28/20 19:25:14 - INFO     - _spatialMasking: Using the spatial masking routine for default
+08/28/20 19:25:14 - INFO     - default: Masking defunct spaxels: 0 spaxels are rejected.
+08/28/20 19:25:14 - INFO     - default: Masking low signal-to-noise spaxels: 14 spaxels are rejected.
+08/28/20 19:25:14 - INFO     - default: No maskfile specified.
+08/28/20 19:25:14 - INFO     - default: Combined mask: 14 spaxels are rejected.
+08/28/20 19:25:14 - INFO     - default: Wrote mask file: ./results/./rs0010_manualap/rs0010_manualap_mask.fits
+08/28/20 19:25:14 - INFO     - _spatialBinning: Results of the module are already in the output directory. Module is skipped.
+08/28/20 19:25:14 - INFO     - _prepareSpectra: Using the routine for default
+08/28/20 19:25:14 - INFO     - default: Applied spatial bins to lin-data
+08/28/20 19:25:14 - INFO     - default: Wrote: ./results/./rs0010_manualap/rs0010_manualap_BinSpectra_linear.fits
+08/28/20 19:25:14 - INFO     - default: Log-rebinned the spectra
+08/28/20 19:25:14 - INFO     - default: Log-rebinned the error spectra
+08/28/20 19:25:14 - INFO     - default: Wrote: ./results/./rs0010_manualap/rs0010_manualap_AllSpectra.fits
+08/28/20 19:25:14 - INFO     - default: Applied spatial bins to log-data
+08/28/20 19:25:15 - INFO     - default: Wrote: ./results/./rs0010_manualap/rs0010_manualap_BinSpectra.fits
+08/28/20 19:25:15 - INFO     - _stellarKinematics: Using the stellarKinematics routine 'ppxf.py'
+08/28/20 19:25:15 - INFO     - ppxf: Using full spectral library for PPXF
+08/28/20 19:25:15 - INFO     - _prepareTemplates: Using the routine for 'miles.py'
+08/28/20 19:25:17 - INFO     - miles: Prepared the stellar population templates
+08/28/20 19:25:17 - INFO     - ppxf: Using V and SIGMA from the MasterConfig file as initial guesses
+08/28/20 19:25:17 - INFO     - ppxf: Running PPXF in parallel mode
+08/28/20 19:25:21 - INFO     - ppxf: Running PPXF on 2 spectra took 4.32s using 16 cores
+08/28/20 19:25:21 - INFO     - ppxf: There were no problems in the analysis.
+08/28/20 19:25:21 - INFO     - ppxf: Calculating Lambda_R
+08/28/20 19:25:21 - INFO     - ppxf: To obtain correct lambda_R measurements, the coordinate system must be centred on the centre of the galaxy. Use the 'READ_DATA|ORIGIN' parameter to do so.
+08/28/20 19:25:21 - INFO     - ppxf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_kin.fits
+08/28/20 19:25:21 - INFO     - ppxf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_kin-bestfit.fits
+08/28/20 19:25:21 - INFO     - ppxf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_kin-optimalTemplates.fits
+08/28/20 19:25:21 - ERROR    - _plotting: "Keyword 'PIXSIZE' not found."
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/_plotting.py", line 18, in generatePlots
+    gistPlot_kin.plotMaps('KIN', config['GENERAL']['OUTPUT'])
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/gistPlot_kin.py", line 72, in plotMaps
+    pixelsize   = table_hdu[0].header['PIXSIZE']
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/astropy/io/fits/header.py", line 145, in __getitem__
+    card = self._cards[self._cardindex(key)]
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/astropy/io/fits/header.py", line 1654, in _cardindex
+    raise KeyError("Keyword {!r} not found.".format(keyword))
+KeyError: "Keyword 'PIXSIZE' not found."
+08/28/20 19:25:21 - ERROR    - _plotting: Failed to produce stellar kinematics maps.
+08/28/20 19:25:21 - INFO     - _emissionLines: Using the emissionLines routine 'gandalf.py'
+08/28/20 19:25:22 - WARNING  - gandalf: It is currently not possible to derive errors with pyGandALF in a Python3 environment. An updated version of pyGandALF will be released soon.
+08/28/20 19:25:22 - WARNING  - gandalf: The emission-line analysis continues without an error estimation.
+08/28/20 19:25:22 - INFO     - gandalf: Using full spectral library for GANDALF on BIN level
+08/28/20 19:25:22 - INFO     - _prepareTemplates: Using the routine for 'miles.py'
+08/28/20 19:25:24 - INFO     - miles: Prepared the stellar population templates
+08/28/20 19:25:24 - INFO     - gandalf: Running GANDALF in parallel mode
+08/28/20 19:25:42 - INFO     - gandalf: Running GANDALF on 2 spectra took 18.36s using 16 cores
+08/28/20 19:25:42 - INFO     - gandalf: There were no problems in the analysis.
+08/28/20 19:25:42 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas_BIN.fits
+08/28/20 19:25:42 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas-bestfit_BIN.fits
+08/28/20 19:25:42 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas-emission_BIN.fits
+08/28/20 19:25:42 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas-cleaned_BIN.fits
+08/28/20 19:25:42 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas-weights_BIN.fits
+08/28/20 19:25:42 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas-optimalTemplate_BIN.fits
+08/28/20 19:25:43 - INFO     - gandalf: Using previously extracted optimal templates from the GANDALF BIN level on SPAXEL level
+08/28/20 19:25:43 - INFO     - gandalf: Running GANDALF in parallel mode
+08/28/20 19:25:47 - INFO     - gandalf: Running GANDALF on 42 spectra took 4.56s using 16 cores
+08/28/20 19:25:47 - INFO     - gandalf: There were no problems in the analysis.
+08/28/20 19:25:47 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas_SPAXEL.fits
+08/28/20 19:25:47 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas-bestfit_SPAXEL.fits
+08/28/20 19:25:47 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas-emission_SPAXEL.fits
+08/28/20 19:25:47 - INFO     - gandalf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_gas-cleaned_SPAXEL.fits
+08/28/20 19:25:47 - ERROR    - _plotting: "Keyword 'PIXSIZE' not found."
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/_plotting.py", line 33, in generatePlots
+    gistPlot_gas.plotMaps(config['GENERAL']['OUTPUT'], 'BIN', True)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/gistPlot_gas.py", line 218, in plotMaps
+    pixelsize   = table_hdu[0].header['PIXSIZE']
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/astropy/io/fits/header.py", line 145, in __getitem__
+    card = self._cards[self._cardindex(key)]
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/astropy/io/fits/header.py", line 1654, in _cardindex
+    raise KeyError("Keyword {!r} not found.".format(keyword))
+KeyError: "Keyword 'PIXSIZE' not found."
+08/28/20 19:25:47 - ERROR    - _plotting: Failed to produce maps from the emission-line analysis.
+08/28/20 19:25:47 - INFO     - _starFormationHistories: Using the starFormationHistories routine 'ppxf.py'
+08/28/20 19:25:47 - INFO     - _prepareTemplates: Using the routine for 'miles.py'
+08/28/20 19:25:49 - INFO     - miles: Prepared the stellar population templates
+08/28/20 19:25:49 - INFO     - ppxf: Using emission-subtracted spectra at ./results/./rs0010_manualap/rs0010_manualap_gas-cleaned_BIN.fits
+08/28/20 19:25:50 - INFO     - ppxf: Stellar kinematics are FIXED to the results obtained before.
+08/28/20 19:25:50 - INFO     - ppxf: Running PPXF in parallel mode
+08/28/20 19:26:17 - INFO     - ppxf: Running PPXF on 2 spectra took 27.86s using 16 cores
+08/28/20 19:26:17 - INFO     - ppxf: There were no problems in the analysis.
+08/28/20 19:26:17 - INFO     - ppxf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_sfh.fits
+08/28/20 19:26:17 - INFO     - ppxf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_sfh-weights.fits
+08/28/20 19:26:18 - INFO     - ppxf: Wrote: ./results/./rs0010_manualap/rs0010_manualap_sfh-bestfit.fits
+08/28/20 19:26:18 - ERROR    - _plotting: "Keyword 'PIXSIZE' not found."
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/_plotting.py", line 48, in generatePlots
+    gistPlot_sfh.plotMaps('SFH', config['GENERAL']['OUTPUT'])
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/gistPlot_sfh.py", line 73, in plotMaps
+    pixelsize   = table_hdu[0].header['PIXSIZE']
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/astropy/io/fits/header.py", line 145, in __getitem__
+    card = self._cards[self._cardindex(key)]
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/astropy/io/fits/header.py", line 1654, in _cardindex
+    raise KeyError("Keyword {!r} not found.".format(keyword))
+KeyError: "Keyword 'PIXSIZE' not found."
+08/28/20 19:26:18 - ERROR    - _plotting: Failed to produce SFH maps.
+08/28/20 19:26:18 - INFO     - _lineStrengths: Using the lineStrengths routine 'default.py'
+08/28/20 19:26:18 - INFO     - default: Using emission-subtracted spectra at ./results/./rs0010_manualap/rs0010_manualap_gas-cleaned_BIN.fits
+08/28/20 19:26:18 - INFO     - default: Wrote: ./results/./rs0010_manualap/rs0010_manualap_ls-cleaned_linear.fits
+08/28/20 19:26:18 - INFO     - default: Running lineStrengths in parallel mode
+08/28/20 19:26:18 - INFO     - default: Running lineStrengths on 2 spectra took 0.46s using 16 cores
+08/28/20 19:26:18 - INFO     - default: There were no problems in the analysis.
+08/28/20 19:26:18 - INFO     - default: Wrote: ./results/./rs0010_manualap/rs0010_manualap_ls_OrigRes.fits
+08/28/20 19:26:18 - INFO     - default: Reading ./results/./rs0010_manualap/rs0010_manualap_ls-cleaned_linear.fits
+08/28/20 19:26:18 - INFO     - default: Loading LS model file at ./spectralTemplates/MILES_KB_LIS8.4.fits
+08/28/20 19:26:18 - INFO     - default: Running lineStrengths in parallel mode
+08/28/20 19:26:19 - INFO     - default: Running lineStrengths on 2 spectra took 0.87s using 16 cores
+08/28/20 19:26:19 - INFO     - default: There were no problems in the analysis.
+08/28/20 19:26:19 - INFO     - default: Wrote: ./results/./rs0010_manualap/rs0010_manualap_ls_AdapRes.fits
+08/28/20 19:26:19 - ERROR    - _plotting: "Keyword 'PIXSIZE' not found."
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/_plotting.py", line 61, in generatePlots
+    gistPlot_ls.plotMaps(config['GENERAL']['OUTPUT'], 'ORIGINAL')
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/plotting/gistPlot_ls.py", line 87, in plotMaps
+    pixelsize   = table_hdu[0].header['PIXSIZE']
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/astropy/io/fits/header.py", line 145, in __getitem__
+    card = self._cards[self._cardindex(key)]
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/astropy/io/fits/header.py", line 1654, in _cardindex
+    raise KeyError("Keyword {!r} not found.".format(keyword))
+KeyError: "Keyword 'PIXSIZE' not found."
+08/28/20 19:26:19 - ERROR    - _plotting: Failed to produce line strength maps.
+08/28/20 19:26:27 - INFO     - MainPipeline: The GIST completed successfully.
+08/28/20 19:26:27 - ERROR    - _initialise: Uncaught Exception
+Traceback (most recent call last):
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/bin/gistPipeline", line 11, in <module>
+    load_entry_point('gistPipeline==3.0.0', 'console_scripts', 'gistPipeline')()
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/MainPipeline.py", line 206, in main
+    runGIST(dirPath, galindex)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/MainPipeline.py", line 76, in runGIST
+    config = _initialise.addPathsToConfig(config, dirPath)
+  File "/afs/cas.unc.edu/users/m/u/mugpol/anaconda3/envs/gistenv/lib/python3.6/site-packages/gistPipeline-3.0.0-py3.6.egg/gistPipeline/initialise/_initialise.py", line 130, in addPathsToConfig
+    config['GENERAL']['INPUT'] = os.path.join(line[1], config['GENERAL']['INPUT'])
+TypeError: 'NoneType' object is not subscriptable
