@@ -34,10 +34,10 @@ def ratioerror(num,num_err,den, den_err):
     err = (num/den) * np.sqrt((num_err/num)**2 + (den_err/den)**2)
     return err
 
-root = '/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/results/'
+#root = '/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/results/'
 #galname = 'rf0376'
-#galname = 'rs0010' #strong OI
-galname = 'rf0503' #strong OI - very compact; only bins 0 and 2 have good SNR
+galname = 'rs0010' #strong OI
+#galname = 'rf0503' #strong OI - very compact; only bins 0 and 2 have good SNR
 
 #galname = 'rf0477' #- strong OI; good SNR ~ 7
 #galname = 'rs0105' - strong OI but weak SNR for spectrum
@@ -47,29 +47,29 @@ inputname = 'binned3d'+galname+'crop'
 #inputname = 'binned3arcsdssrs0010'
 #inputname = 'sami2sdssrs0010blue' #'sdss3arcrs0010'
 #folder = root+inputname+'_1/'
-folder = root+inputname+'_snr5skymask/'
+folder = galname+'_snr8_2'
+data = fits.open(inputname+'.fits')[0].data
+hgal = fits.open(inputname+'.fits')[0].header
+
 os.chdir(folder)
-
-cfit = Table.read(inputname+'_ppxf-bestfit.fits')
-fit = Table.read(inputname+'_gandalf-bestfit_BIN.fits')
-data = fits.open('/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/inputData/'+inputname+'.fits')[0].data
-hgal = fits.open('/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/inputData/'+inputname+'.fits')[0].header
+cfit = Table.read(folder+'_kin-bestfit.fits')
+fit = Table.read(folder+'_gas-bestfit_BIN.fits')
 lamdata = (np.arange(hgal['NAXIS3']) + hgal['CRPIX3']-1) * hgal['CDELT3'] + hgal['CRVAL3'] 
-table = fits.open(folder+inputname+'_table.fits')[1].data
-lam = fits.open(inputname+'_VorSpectra.fits')[2].data.LOGLAM
-spec = fits.open(inputname+'_VorSpectra.fits')[1].data.SPEC
+table = fits.open(folder+'_table.fits')[1].data
+lam = fits.open(folder+'_BinSpectra.fits')[2].data.LOGLAM
+spec = fits.open(folder+'_BinSpectra.fits')[1].data.SPEC
 
-plam = fits.open(folder+inputname+'_ppxf-optimalTemplates.fits')[2].data['LOGLAM_TEMPLATE']
+plam = fits.open(folder+'_kin-optimalTemplates.fits')[2].data['LOGLAM_TEMPLATE']
 good = (lamdata > 4300) & (lamdata < 6900)
-temp = fits.open(folder+inputname+'_ppxf-optimalTemplates.fits')
+temp = fits.open(folder+'_kin-optimalTemplates.fits')
 #plt.plot(np.exp(plam), np.transpose(temp[1].data[0]))
-nbins = [0, 1, 2]
+nbins = np.unique(np.abs(table.BIN_ID))
 df= pd.read_csv('~/github/SDSS_spectra/RESOLVE_filter_new.csv')
 df.index = df.name    
 
 #db = readsav('/srv/one/resolve/database_internal/merged_idl_catalog/stable/resolvecatalog.dat')
  
-db = readsav('/afs/cas.unc.edu/users/m/u/mugpol/github/SDSS_spectra/resolvecatalog.dat')
+db = readsav('C:/users/mugdhapolimera/github/SDSS_spectra/resolvecatalog.dat')
 name = [x.decode('utf-8') for x in db['name']]
 vhel = dict(zip(name,db['vhel'])) #km/s
 v = vhel[galname]
@@ -81,42 +81,45 @@ d = d_comov
 pixelscale = 0.29*3 #arcsec/pix
 #R = d*(0.29*3/2)/(360*60*60)*1e3 #in kpc
 R = 2*math.pi*d*(pixelscale/3600)/(360)*10**6 #in pc
-mask = np.genfromtxt(folder+'spectralMasking_PPXF.config', dtype = None,
+mask = np.genfromtxt('../spectralMasking_PPXF', dtype = None,
                     skip_header = 3, names = ['lam','width','line'])
+em_ndx = (mask['line'] != b'sky')
 
-plt.figure()
+fig, axes = plt.subplots(3,1)
+fig.suptitle(folder)
 for nbin in nbins:
+    ax = axes.ravel()[nbin]
 #    plt.plot(np.exp(lam), spec[nbin]+(nbin*2*np.max(spec[nbin-1])), 'k')
 #    plt.plot( np.exp(lam), fit['BESTFIT'][nbin]+(nbin*2*np.max(spec[nbin-1])), 'r', lw = 3)
 #    plt.plot( np.exp(lam), cfit['BESTFIT'][nbin]+(nbin*2*np.max(spec[nbin-1])), 'orange', lw = 2)
-    plt.plot(np.exp(lam), spec[nbin]+(nbin*300), 'k')
-#    plt.plot(lamdata/(1+z),data[:,:,23]*(1+z))
-    plt.plot( np.exp(lam), fit['BESTFIT'][nbin]+(nbin*300), 'r', lw = 3)
-    plt.plot( np.exp(lam), cfit['BESTFIT'][nbin]+(nbin*300), 'orange', lw = 2)
+    ax.plot(np.exp(lam), spec[nbin], 'k')
+    ax.plot( np.exp(lam), fit['BESTFIT'][nbin], 'r', lw = 3)
+    ax.plot( np.exp(lam), cfit['BESTFIT'][nbin], 'orange', lw = 2)
     #plt.text(4500,200+nbin*300, 'Bin '+str(nbin))
+    if nbin == 0:
+        ax.text(4500,1200, 'Bin 0 - Continuum center', fontsize = 20)
+    else:
+        ax.text(4500,1200, 'Bin '+str(nbin),fontsize = 20)#+' - 0.87" ('+str(int(R))+' pc) off center', 
+         
+    ax.set_ylabel('Flux (in counts)', fontsize = 22)
+    ax.set_xlim(np.exp(lam)[0],np.exp(lam)[-1])
 
-plt.text(4500,175, 'Bin 0 - Continuum center', fontsize = 20)
-plt.text(4500,450, 'Bin 1 - 0.87" ('+str(int(R))+' pc) off center', 
-         fontsize = 20)
-plt.text(4500,775, 'Bin 2 - 0.87" ('+str(int(R))+' pc) off center', 
-         fontsize = 20)
-em_ndx = (mask['line'] != b'sky')
-for mlam,width in zip(mask['lam'][em_ndx],mask['width'][em_ndx]):
-    plt.axvspan(mlam-width/2,mlam+width/2,facecolor = 'k', alpha = 0.1)
-for mlam,width in zip(mask['lam'][~em_ndx],mask['width'][~em_ndx]):
-    plt.axvspan(mlam-width/2,mlam+width/2,facecolor = 'blue', alpha = 0.1)
-plt.xlim(np.exp(lam)[0],np.exp(lam)[-1])
+    #plt.text(4500,775, 'Bin 2 - 0.87" ('+str(int(R))+' pc) off center', 
+#         fontsize = 20)
+    for mlam,width in zip(mask['lam'][em_ndx],mask['width'][em_ndx]):
+        ax.axvspan(mlam-width/2,mlam+width/2,facecolor = 'k', alpha = 0.1)
+    for mlam,width in zip(mask['lam'][~em_ndx],mask['width'][~em_ndx]):
+        ax.axvspan(mlam-width/2,mlam+width/2,facecolor = 'blue', alpha = 0.1)
 plt.xlabel('Wavelength (in Angstroms)', fontsize = 22)
-plt.ylabel('Flux (in counts)', fontsize = 22)
 #plt.plot(np.exp(plam), fit[0]['BESTFIT'])
 #plt.plot(lamdata[good]/(1+z),data[:,:,24][good])#/max(data[:,:,24][good]))
 #plt.plot(data[:,:,23][good])
 #plt.plot(data[:,:,22][good])
     
-em = Table.read(inputname+'_gandalf_BIN.fits', hdu = 2)['FLUX']
-em = em[np.median(em, axis = 1) != -1.0]
-em_lam = Table.read(inputname+'_gandalf_BIN.fits', hdu = 1)['_lambda']
-em_name = Table.read(inputname+'_gandalf_BIN.fits', hdu = 1)['name']
+em = Table.read(folder+'_gas_BIN.fits')
+#em = em[np.median(em, axis = 1) != -1.0]
+#em_lam = Table.read(folder+'_gas_BIN.fits', hdu = 1)['_lambda']
+em_name = em.keys()
 
 #nii = em[:,em_name == '[NII]'][[0,2]]
 #sii = em[:,em_lam == 6716.31][[0,2]]+ em[:,em_lam == 6730.68][[0,2]]#em[:,em_name == '[SII]']
@@ -124,13 +127,13 @@ em_name = Table.read(inputname+'_gandalf_BIN.fits', hdu = 1)['name']
 #oiii = em[:,em_lam == 5006.77][[0,2]]#[:,em_name == '[OIII]']
 #halpha = em[:,em_name == 'Ha'][[0,2]]
 #hbeta = em[:,em_name == 'Hb'][[0,2]]
-nii = em[:,em_name == '[NII]']
-sii = em[:,em_lam == 6716.31]+ em[:,em_lam == 6730.68]#em[:,em_name == '[SII]']
-oi = em[:,em_name == '[OI]']
-oiii = em[:,em_lam == 5006.77]#[:,em_name == '[OIII]']
-halpha = em[:,em_name == 'Ha']
-hbeta = em[:,em_name == 'Hb']
-hbeta[0] = 2*hbeta[0]
+nii = em['[NII]_6583.34_F']
+sii = em['[SII]_6716.31_F']+ em['[SII]_6730.68_F']#em[:,em_name == '[SII]']
+oi = em['[OI]_6300.2_F']
+oiii = em['[OIII]_5006.77_F']#[:,em_name == '[OIII]']
+halpha = em['Ha_6562.8_F']
+hbeta = em['Hb_4861.32_F']
+#hbeta[0] = 2*hbeta[0]
 error = 0
 cmap = plt.get_cmap('rainbow', len(nii)*2)
 #tag = np.arange(len(nii))
