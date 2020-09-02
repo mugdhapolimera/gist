@@ -67,18 +67,22 @@ def extract_spectra_parameters(skyfiles,arcfiles,setup):
 #be sure to change name at the top
 lam, arcspec, conv, pix_to_fit = extract_spectra_parameters(skyfiles,arcfiles,'blue')
 
+shap=np.shape(arcspec)
 waverange = [np.min(lam), np.max(lam)]
-add=[30, 30, 25, 10] #number of pixels around the line that are included in the fit
+add=[20, 20, 10, 10] #number of pixels around the line that are included in the fit
 #add=[20, 20, 20, 20]
+import pandas as pd
+allarclines = pd.read_csv("CuAr_GMOS.dat", delimiter = "  ", comment = '#', \
+                       names = ['lambda','comments'])
+#arclines = np.array(allarclines['lambda'])
+#arclines = arclines[(arclines >= waverange[0]) & (arclines <= waverange[1])]
+conv=((waverange[1]-waverange[0])/(shap[0]-1))
 
-
-conv=((waverange[1]-waverange[0])/(shap[1]-1))
-
-lines=np.array(lines)
+lines=arclines
 pixlines=(lines/conv)-(waverange[0]/conv)
 pixlines = [int(x) for x in pixlines]
 
-x0=np.arange(0,shap[1],1)
+x0=np.arange(0,shap[0],1)
 x1=np.arange(pixlines[0]-add[0],pixlines[0]+add[0],1)
 x2=np.arange(pixlines[1]-add[1],pixlines[1]+add[1],1)
 x3=np.arange(pixlines[2]-add[2],pixlines[2]+add[2],1)
@@ -89,20 +93,21 @@ plt.figure()
 ax4=plt.subplot2grid((2,5),(0,0),colspan=5)
 #use a row that is off the galaxy - 100 rows above the center is arbitrarily chosen
 row = shap[0]//2+100
-plt.plot(lam,arcspec[row,:],'b-') 
+plt.plot(lam,arcspec,'b-') 
 
-plt.plot(lam[x1],arcspec[row,pixlines[0]-add[0]:pixlines[0]+add[0]],'r-')
-plt.plot(lam[x2],arcspec[row,pixlines[1]-add[1]:pixlines[1]+add[1]],'r-')
-plt.plot(lam[x3],arcspec[row,pixlines[2]-add[2]:pixlines[2]+add[2]],'r-')
-plt.plot(lam[x4],arcspec[row,pixlines[3]-add[3]:pixlines[3]+add[3]],'r-')
+plt.plot(lam[x1],arcspec[pixlines[0]-add[0]:pixlines[0]+add[0]],'r-')
+plt.plot(lam[x2],arcspec[pixlines[1]-add[1]:pixlines[1]+add[1]],'r-')
+plt.plot(lam[x3],arcspec[pixlines[2]-add[2]:pixlines[2]+add[2]],'r-')
+plt.plot(lam[x4],arcspec[pixlines[3]-add[3]:pixlines[3]+add[3]],'r-')
 #plt.plot(lam[x5],arcspec[shap[0]//2+100,pixlines[4]-add[4]:pixlines[4]+add[4]],'r-')
 
 
 plt.title('red = arc lines used for FWHM calc')
+from mpfit import mpfit
 
 fwhminpix=[]
 for i in np.arange(len(lines)):
-    nput=arcspec[row,pixlines[i]-add[i]:pixlines[i]+add[i]]
+    nput=arcspec[pixlines[i]-add[i]:pixlines[i]+add[i]]
     gerr=np.zeros(len(nput))+0.5
     xaxis=np.arange(len(nput))
 
