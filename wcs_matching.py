@@ -36,7 +36,7 @@ if galname == 'rs0010':
 v = resdata['vhel'][np.where(resdata['name'] == galname)] #km/s
 z = v/3e5
 
-os.chdir(r'C:\Users\mugdhapolimera\Desktop\UNC\Courses\Research\SAMI Data\/'+ folder)
+os.chdir(r'F:\mugdhapolimera\Documents\UNC\Courses\Research\SAMI Data\/'+ folder)
 image = folder+'_cube_red.fits'
 cubehdu = fits.open(image)[0].header
 lam0 = cubehdu['CRVAL3']-((cubehdu['CRPIX3']-1)*cubehdu['CDELT3'])
@@ -68,19 +68,19 @@ resC = [Circle((ra,dec), radius = 0.5/3600.0) for ra,dec in zip(ra_cen,dec_cen)]
 #respatches = PatchCollection(resC, edgecolor = 'r', facecolor = 'none',
 #                             transform = ax.get_transform('world'), 
 #                             label = 'RESOLVE WCS Coordinates')
-c = Circle((sdss[0],sdss[1]), radius = 1/3600.0, edgecolor = 'magenta', lw = 5,
+c = Circle((sdss[0],sdss[1]), radius = 1.5/3600.0, edgecolor = 'magenta', lw = 5,
            facecolor = 'none', transform = ax.get_transform('world'), 
            label = 'SDSS 2" fibre')
 ax.add_patch(c)
 #ax.add_collection(respatches)
-ax.scatter(sdss[0],sdss[1], c = 'm', s = 100,
-           transform = ax.get_transform('world'), label = 'SDSS Center')
-ax.scatter(resolve[0],resolve[1], c = 'r', s = 100,
-           transform = ax.get_transform('world'), 
-           label = 'RESOLVE Photometric Center')
-ax.scatter(res_cont[0],res_cont[1], c = 'w', marker = '^', s = 100, 
-           edgecolors = 'k', linewidths = 3, transform = ax.get_transform('world'), 
-           label = 'RESOLVE Continuum Center')
+#ax.scatter(sdss[0],sdss[1], c = 'm', s = 100,
+#           transform = ax.get_transform('world'), label = 'SDSS Center')
+#ax.scatter(resolve[0],resolve[1], c = 'r', s = 100,
+#           transform = ax.get_transform('world'), 
+#           label = 'RESOLVE Photometric Center')
+#ax.scatter(res_cont[0],res_cont[1], c = 'w', marker = '^', s = 100, 
+#           edgecolors = 'k', linewidths = 3, transform = ax.get_transform('world'), 
+#           label = 'RESOLVE Continuum Center')
 plt.xlabel('RA', fontsize = 22)
 plt.ylabel('Dec', fontsize = 22)
 ra_low = ra_cen - 0.5/3600.0
@@ -92,16 +92,16 @@ slitlow = np.poly1d(np.polyfit(ra_low,dec_low,30))
 slithigh = np.poly1d(np.polyfit(ra_high,dec_high,30))
 ra = np.arange(ra_low.min(), ra_low.max(),0.0001)
 dec = slitlow(ra)
-ax.plot(ra,dec,c = 'green', lw = 5,
-           transform = ax.get_transform('world'))
-ra = np.arange(ra_high.min(), ra_high.max(),0.0001)
-dec = slithigh(ra)
-ax.plot(ra,dec,c = 'green', lw = 5,
-           transform = ax.get_transform('world'), label = 'SOAR 1" Slit')
+#ax.plot(ra,dec,c = 'green', lw = 5,
+#           transform = ax.get_transform('world'))
+#ra = np.arange(ra_high.min(), ra_high.max(),0.0001)
+#dec = slithigh(ra)
+#ax.plot(ra,dec,c = 'green', lw = 5,
+#           transform = ax.get_transform('world'), label = 'SOAR 1" Slit')
 pix = np.where((coords[1] <= slitlow(coords[0])) & (coords[1] >= slithigh(coords[0])))
 #ax.scatter(coords[0][pix],coords[1][pix], c = 'orange', s = 2,
 #           transform = ax.get_transform('world'))
-plt.legend()
+#plt.legend()
 
 #plt.figure()
 #plt.plot(ra_low, dec_low)
