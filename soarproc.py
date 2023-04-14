@@ -96,11 +96,11 @@ fluxcorr = 10**(-0.4*(flux - np.median(flux))) #if sens in mag, gives ratios
 #Multiply galaxy spectrum by fluxcorr for relative calibration (not absolute)
 galcorr = gal*fluxcorr
 
-#plt.figure()
-#plt.plot(stdlam, std,'b')
-#plt.plot(lam,flux,'r')
-#plt.plot(lam,gal[int(len(gal)/2)],'g')
-#plt.plot(lam,galcorr[int(len(gal)/2)],'k')
+plt.figure()
+plt.plot(stdlam, std,'b')
+plt.plot(lam,flux,'r')
+plt.plot(lam,gal[int(len(gal)/2)],'g')
+plt.plot(lam,galcorr[int(len(gal)/2)],'k')
 
 
 #Quick and dirty way to find the center
