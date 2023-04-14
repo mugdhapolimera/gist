@@ -34,42 +34,67 @@ def ratioerror(num,num_err,den, den_err):
     err = (num/den) * np.sqrt((num_err/num)**2 + (den_err/den)**2)
     return err
 
-#root = '/afs/cas.unc.edu/users/m/u/mugpol/Desktop/gistTutorial/results/'
 #galname = 'rf0376'
-galname = 'rs0010' #strong OI
+galname = 'rs0183' #strong OI
 #galname = 'rf0503' #strong OI - very compact; only bins 0 and 2 have good SNR
-
 #galname = 'rf0477' #- strong OI; good SNR ~ 7
 #galname = 'rs0105' - strong OI but weak SNR for spectrum
 #galname = 'rs1143'
+#galname = "rf0078"
 #galname = 'rs0124' #very low SNR throughout : GIST coulg not bin upto SNR ~ 5
-inputname = 'binned3d'+galname+'crop'
-#inputname = 'binned3arcsdssrs0010'
-#inputname = 'sami2sdssrs0010blue' #'sdss3arcrs0010'
-#folder = root+inputname+'_1/'
-folder = galname+'_snr8_2'
-data = fits.open(inputname+'.fits')[0].data
-hgal = fits.open(inputname+'.fits')[0].header
 
-os.chdir(folder)
+#inputname = "rf0078_finalcube"
+inputname = "binned3d"+galname+"crop"
+
+#Directory where GIST is run from
+root1 = '/srv/two/sheila/mugpol/github/gist_wrappers/rungist/'
+data = fits.open(root1+"inputData/"+inputname+'.fits')[0].data
+hgal = fits.open(root1+"inputData/"+inputname+'.fits')[0].header
+
+#Directory where results are stored
+root = '/srv/two/sheila/mugpol/github/gist_wrappers/rungist/results/'
+folder = galname+'_snr30newdeg'  #name of the results folder
+os.chdir(root+folder)
+
+#Continuum fit from ppxf
 cfit = Table.read(folder+'_kin-bestfit.fits')
-fit = Table.read(folder+'_gas-bestfit_BIN.fits')
+#Try to read continuum+emission line fit fro gandalf if it exists
+try: 
+    fit = Table.read(folder+'_gas-bestfit_BIN.fits')
+except IOError:
+    print("No Emission line module")
+
+#Wavelength solution of the input spectrum
 lamdata = (np.arange(hgal['NAXIS3']) + hgal['CRPIX3']-1) * hgal['CDELT3'] + hgal['CRVAL3'] 
+#Table with info about bins and SNR
 table = fits.open(folder+'_table.fits')[1].data
+#Wavelength of the binned spectrum from GIST
 lam = fits.open(folder+'_BinSpectra.fits')[2].data.LOGLAM
+#Flux/intensity of the binned spectrum from GIST
 spec = fits.open(folder+'_BinSpectra.fits')[1].data.SPEC
 
+#Wavelength array of the best fit continuum template from GIST
 plam = fits.open(folder+'_kin-optimalTemplates.fits')[2].data['LOGLAM_TEMPLATE']
+#Wavelength region that is fit (can be read in from config file)
 good = (lamdata > 4300) & (lamdata < 6900)
+#Best fit continuum template
 temp = fits.open(folder+'_kin-optimalTemplates.fits')
-#plt.plot(np.exp(plam), np.transpose(temp[1].data[0]))
-nbins = np.unique(np.abs(table.BIN_ID))
+
+#Table with kinematic data
+kin = fits.open(folder+'_kin.fits')[1].data
+v_gist = kin['V']
+sig_gist = kin["SIGMA"][0]
+sig_gist_err = kin["FORM_ERR_SIGMA"][0]
+
+#Bin numbers given in the table
+nbins = np.unique(np.abs(table.BIN_ID)) #[0]
+#Read in RESOLVE public database
 df= pd.read_csv('~/github/SDSS_spectra/RESOLVE_filter_new.csv')
 df.index = df.name    
-
+#Read in RESOLVE internal database
 db = readsav('/srv/one/resolve/database_internal/merged_idl_catalog/stable/resolvecatalog.dat')
- 
-#db = readsav('C:/users/mugdhapolimera/github/SDSS_spectra/resolvecatalog.dat')
+
+#Calculate the radius of the galaxy in pc 
 name = [x.decode('utf-8') for x in db['name']]
 vhel = dict(zip(name,db['vhel'])) #km/s
 v = vhel[galname]
@@ -81,10 +106,13 @@ d = d_comov
 pixelscale = 0.29*3 #arcsec/pix
 #R = d*(0.29*3/2)/(360*60*60)*1e3 #in kpc
 R = 2*math.pi*d*(pixelscale/3600)/(360)*10**6 #in pc
-mask = np.genfromtxt('../spectralMasking_PPXF', dtype = None,
-                    skip_header = 3, names = ['lam','width','line'])
-em_ndx = (mask['line'] != b'sky')
 
+#Read in masking regions from GIST config files
+mask = np.genfromtxt('../../configFiles/spectralMasking_PPXF', dtype = None,
+                    skip_header = 3, names = ['lam','width','line'])
+em_ndx = (mask['line'] != b'sky') #index for masked regions that are not sky lines
+
+#Plot spectra from all bins. If you only want central bin, define nbins = [0]
 fig, axes = plt.subplots(len(nbins),1)
 fig.suptitle(folder)
 for nbin in nbins:
@@ -92,18 +120,18 @@ for nbin in nbins:
         ax = axes.ravel()[nbin]
     else:
         ax = axes
-#    plt.plot(np.exp(lam), spec[nbin]+(nbin*2*np.max(spec[nbin-1])), 'k')
-#    plt.plot( np.exp(lam), fit['BESTFIT'][nbin]+(nbin*2*np.max(spec[nbin-1])), 'r', lw = 3)
-#    plt.plot( np.exp(lam), cfit['BESTFIT'][nbin]+(nbin*2*np.max(spec[nbin-1])), 'orange', lw = 2)
-    ax.plot(np.exp(lam), spec[nbin], 'k')
-    ax.plot( np.exp(lam), fit['BESTFIT'][nbin], 'r', lw = 3)
-    ax.plot( np.exp(lam), cfit['BESTFIT'][nbin], 'orange', lw = 2)
+    ax.plot(np.exp(lam), spec[nbin], 'k') #input spectra
+    try: 
+        ax.plot( np.exp(lam), fit['BESTFIT'][nbin], 'r', lw = 3) #best fit of continuum + emission lines
+    except NameError:
+        print("")
+    ax.plot( np.exp(lam), cfit['BESTFIT'][nbin], 'orange', lw = 2) #continuum best fit
     #plt.text(4500,200+nbin*300, 'Bin '+str(nbin))
     if nbin == 0:
         ax.text(4500,1200, 'Bin 0 - Continuum center', fontsize = 20)
     else:
         ax.text(4500,1200, 'Bin '+str(nbin),fontsize = 20)#+' - 0.87" ('+str(int(R))+' pc) off center', 
-         
+        ax.text(4500,900, 'Sigma = '+str(sig_gist)[0:4]+"+/-"+str(sig_gist_err)[0:4],fontsize = 10) 
     ax.set_ylabel('Flux (in counts)', fontsize = 22)
     ax.set_xlim(np.exp(lam)[0],np.exp(lam)[-1])
 
@@ -114,22 +142,24 @@ for nbin in nbins:
     for mlam,width in zip(mask['lam'][~em_ndx],mask['width'][~em_ndx]):
         ax.axvspan(mlam-width/2,mlam+width/2,facecolor = 'blue', alpha = 0.1)
 plt.xlabel('Wavelength (in Angstroms)', fontsize = 22)
-#plt.plot(np.exp(plam), fit[0]['BESTFIT'])
-#plt.plot(lamdata[good]/(1+z),data[:,:,24][good])#/max(data[:,:,24][good]))
-#plt.plot(data[:,:,23][good])
-#plt.plot(data[:,:,22][good])
-    
+
+
+###############################################################################
+#Plot NII, SII and OI plots    
+#Table with emission line fluxes
 em = Table.read(folder+'_gas_BIN.fits')
 #em = em[np.median(em, axis = 1) != -1.0]
 #em_lam = Table.read(folder+'_gas_BIN.fits', hdu = 1)['_lambda']
 em_name = em.keys()
 
+#old naming convension - obsolete
 #nii = em[:,em_name == '[NII]'][[0,2]]
 #sii = em[:,em_lam == 6716.31][[0,2]]+ em[:,em_lam == 6730.68][[0,2]]#em[:,em_name == '[SII]']
 #oi = em[:,em_name == '[OI]'][[0,2]]
 #oiii = em[:,em_lam == 5006.77][[0,2]]#[:,em_name == '[OIII]']
 #halpha = em[:,em_name == 'Ha'][[0,2]]
 #hbeta = em[:,em_name == 'Hb'][[0,2]]
+
 nii = em['[NII]_6583.34_F']
 sii = em['[SII]_6716.31_F']+ em['[SII]_6730.68_F']#em[:,em_name == '[SII]']
 oi = em['[OI]_6300.2_F']

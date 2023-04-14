@@ -24,7 +24,7 @@ arcfiles = glob.glob(root + galname + '/' + 'teprg*') #prefix for arc files
 skylines = [5577.334, 6300.304, 6363.780, 6863.955] # red setup
 arclines = [4702.3161,4806.0205,5062.0371,5090.4951] # blue setup
 
-def extract_spectra_parameters(skyfiles,arcfiles,setup):
+def extract_spectra_gemini(skyfiles,arcfiles,setup):
     if setup == 'red':        
         ### defining useful variables ###
         fitsfile = fits.open(skyfiles[0]) #opens first fits arbitrarily
