@@ -54,9 +54,10 @@ def bin_spectra(filename, bin_type, crop, standardflag,
                 standard_name = '/srv/one/resolve/analysis_code/emlineanalysis/broademline/R2013-11-04_LTT1788_cen_broad_sens.fits'):
     """
     filename (str) = Filename of 2-D galaxy spectra
+    compfilename (str) = Filename of 2-D arc file
+    standardflag (0/1) = Use Standard Star spectrum for relative flux calibration    
     bin_type (str) = 'rows' for binning 3 rows starting from center
                      'sdss' for mimicing SDSS 3" aperture 
-    standardflag (0/1) = Use Standard Star spectrum for relative flux calibration    
     standard_name (str) = Filename of standard star spectrum    
     """
     galaxy = fits.open(filename)
@@ -89,11 +90,11 @@ def bin_spectra(filename, bin_type, crop, standardflag,
         galcorr = gal*fluxcorr
 
         #Plot to check
-        plt.figure()
+        #plt.figure()
         #plt.plot(stdlam, std,'b')
         #plt.plot(lam,flux,'r')
         #plt.plot(lam,gal[int(len(gal)/2)],'g')
-        plt.plot(lam,galcorr[int(len(gal)/2)],'k')
+        #plt.plot(lam,galcorr[int(len(gal)/2)],'k')
         gal = galcorr
     
     
